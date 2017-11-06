@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Moments</string>
+    <string name="content">Unlike many proprietary big data processing platform different, Spark is built on a unified abstract RDD, making it possible to deal with different ways consistent with large data processing scenarios, including MapReduce, Streaming, SQL, Machine Learning and Graph so on. To understand the Spark, you have to understand the RDD.</string>
+</resources>
