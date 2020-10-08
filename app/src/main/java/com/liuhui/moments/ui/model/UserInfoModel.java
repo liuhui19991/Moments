@@ -2,7 +2,7 @@ package com.liuhui.moments.ui.model;
 
 
 /**
- * Created by liuhui on 2017/11/4.
+ * Created by liuhui on 2020/10/6.
  */
 
 public class UserInfoModel extends DataModel {

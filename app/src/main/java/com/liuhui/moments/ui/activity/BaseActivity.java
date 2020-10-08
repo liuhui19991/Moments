@@ -8,7 +8,7 @@ import android.view.View;
 
 /**
  * 基类Activity
- * Created by liuhui on 2017/11/4.
+ * Created by liuhui on 2020/10/6.
  */
 
 public abstract class BaseActivity extends AppCompatActivity {

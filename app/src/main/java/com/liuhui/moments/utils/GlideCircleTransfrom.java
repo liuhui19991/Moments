@@ -11,7 +11,7 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
 /**
  * 使用Glide加载圆形图片
- * Created by liuhui on 2015/8/8.
+ * Created by liuhui on 2017/8/8.
  * 使用方法 Glide.with(this).load(url).transform(new GlideCircleTransfromUtil(context)).into(imageView);
  */
 public class GlideCircleTransfrom extends BitmapTransformation {

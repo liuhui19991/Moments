@@ -2,7 +2,7 @@ package com.liuhui.moments.ui.model;
 
 /**
  * 朋友圈图片
- * Created by liuhui on 2017/11/5.
+ * Created by liuhui on 2020/10/6.
  */
 
 public class ImagesModel extends DataModel{

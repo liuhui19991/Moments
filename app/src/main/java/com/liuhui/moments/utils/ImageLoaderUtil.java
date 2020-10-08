@@ -10,7 +10,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.liuhui.moments.R;
 
 /**
- * Created by liuhui on 2016/7/19.
+ * Created by liuhui on 2017/7/19.
  */
 public class ImageLoaderUtil {
     public static int placeholder = R.mipmap.ic_launcher;
@@ -32,7 +32,6 @@ public class ImageLoaderUtil {
             return;
         }
         Context context = view.getContext();
-        // View还活着吗？
         if (context instanceof Activity) {
             if (((Activity) context).isFinishing()) {
                 return;
@@ -56,7 +55,6 @@ public class ImageLoaderUtil {
             return;
         }
         Context context = imageView.getContext();
-        // View还活着吗？
         if (context instanceof Activity) {
             if (((Activity) context).isFinishing()) {
                 return;
@@ -83,7 +81,6 @@ public class ImageLoaderUtil {
             return;
         }
         Context context = imageView.getContext();
-        // View还活着吗？
         if (context instanceof Activity) {
             if (((Activity) context).isFinishing()) {
                 return;
@@ -100,7 +97,6 @@ public class ImageLoaderUtil {
             return;
         }
         Context context = imageView.getContext();
-        // View还活着吗？
         if (context instanceof Activity) {
             if (((Activity) context).isFinishing()) {
                 return;
@@ -127,7 +123,6 @@ public class ImageLoaderUtil {
             return;
         }
         Context context = imageView.getContext();
-        // View还活着吗？
         if (context instanceof Activity) {
             if (((Activity) context).isFinishing()) {
                 return;

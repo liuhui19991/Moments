@@ -7,7 +7,7 @@ import android.text.TextUtils;
 
 /**
  * 展示等待框，数据
- * Created by liuhui on 2017/11/4.
+ * Created by liuhui on 2020/10/6.
  */
 
 public abstract class Show implements IShow {

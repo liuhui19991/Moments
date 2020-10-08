@@ -10,7 +10,7 @@ import com.lzy.ninegrid.NineGridView;
 
 
 /**
- * Created by liuhui on 2016/11/14.
+ * Created by liuhui on 2020/10/6.
  */
 
 public class BaseApplication extends Application {

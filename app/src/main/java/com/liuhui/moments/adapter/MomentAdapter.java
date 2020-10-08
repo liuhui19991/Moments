@@ -30,7 +30,7 @@ import static com.liuhui.moments.R.id.tv_img_content;
 
 /**
  * 朋友圈的总adapter
- * Created by liuhui on 2017/11/4.
+ * Created by liuhui on 2020/10/6.
  */
 public class MomentAdapter extends BaseQuickAdapter<MomentModel, BaseViewHolder> {
     private Context mContext;
@@ -52,10 +52,12 @@ public class MomentAdapter extends BaseQuickAdapter<MomentModel, BaseViewHolder>
             helper.getView(R.id.rv_img_respond).setVisibility(View.GONE);
             return;
         }
-        // 加载用户头像
-        ImageLoaderUtil.display((ImageView) helper.getView(R.id.iv_img_head), momentModel.getSender().getAvatar());
-        //用户名
-        helper.setText(R.id.tv_img_name, momentModel.getSender().getNick());
+        if (momentModel.getSender() !=  null){
+            // 加载用户头像
+            ImageLoaderUtil.display((ImageView) helper.getView(R.id.iv_img_head), momentModel.getSender().getAvatar());
+            //用户名
+            helper.setText(R.id.tv_img_name, momentModel.getSender().getNick());
+        }
 
         // 说说内容
         if (TextUtils.isEmpty(momentModel.getContent()))

@@ -6,7 +6,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 
 /**
- * Created by liuhui on 2016/7/27.
+ * Created by liuhui on 2017/7/27.
  */
 public class MD5Util {
 

@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * 缓存设置
- * Created by liuhui on 2015/7/27.
+ * Created by liuhui on 2020/10/6.
  */
 public class AppCacheUtil {
 

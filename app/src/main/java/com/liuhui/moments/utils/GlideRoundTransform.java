@@ -13,7 +13,7 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
 /**
  * 使用Glide加载圆角图片
- * Created by liuhui on 2015/8/8.
+ * Created by liuhui on 2017/8/8.
  * 使用方法 Glide.with(this).load(url).transform(new GlideRoundTransformUtil(context)).into(imageView);
  */
 public class GlideRoundTransform extends BitmapTransformation {

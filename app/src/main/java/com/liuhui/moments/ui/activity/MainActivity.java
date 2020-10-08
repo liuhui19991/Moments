@@ -3,6 +3,7 @@ package com.liuhui.moments.ui.activity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -13,14 +14,13 @@ import com.liuhui.moments.net.Net;
 import com.liuhui.moments.net.Show;
 import com.liuhui.moments.ui.model.MomentModel;
 import com.liuhui.moments.utils.AppCacheUtil;
-import com.liuhui.moments.utils.LogUtil;
 
 import java.util.ArrayList;
 
 
 /**
  * 展示等待框，数据
- * Created by liuhui on 2017/11/4.
+ * Created by liuhui on 2020/10/6.
  */
 public class MainActivity extends BaseActivity implements BaseQuickAdapter.RequestLoadMoreListener {
 
@@ -83,10 +83,13 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
 
             @Override
             public void success(String string) {
-                String result = string.replace("unknown error", "error");
-                mMomentModelList = (ArrayList<MomentModel>) JSON.parseArray(result, MomentModel.class);
+                Log.e("sss", "success: " + string);
+//                String result = string.replace("unknown error", "error");
+//                String result = string.replace("unknown error", "error");
+//                result = string;
+                mMomentModelList = (ArrayList<MomentModel>) JSON.parseArray(string, MomentModel.class);
                 //1.请求下来的数据需要保存到本地
-                AppCacheUtil.getInstance(mContext).put(Constant.REQUEST_DATA, result);
+                AppCacheUtil.getInstance(mContext).put(Constant.REQUEST_DATA, string);
                 ArrayList<MomentModel> currentPosition = new ArrayList<>();
                 for (int i = mPosition; i < mPosition + 5; i++) {
                     currentPosition.add(mMomentModelList.get(i));

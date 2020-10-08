@@ -2,7 +2,7 @@ package com.liuhui.moments.ui.model;
 
 /**
  * 回复评论的内容和用户信息
- * Created by liuhui on 2017/11/5.
+ * Created by liuhui on 2020/10/6.
  */
 
 public class SenderModel {

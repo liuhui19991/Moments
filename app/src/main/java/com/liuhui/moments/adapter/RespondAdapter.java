@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * 评论
- * Created by liuhui on 2017/11/4.
+ * Created by liuhui on 2020/10/6.
  */
 class RespondAdapter extends BaseQuickAdapter<CommentsModel, BaseViewHolder> {
 

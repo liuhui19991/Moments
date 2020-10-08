@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 /**
  * L.e("hello, %s", "world");//, %s这样才能换行
- * Created by liuhui on 2016/6/19.
+ * Created by liuhui on 2017/6/19.
  */
 public class LogUtil {
     private static boolean isDebug = true;
