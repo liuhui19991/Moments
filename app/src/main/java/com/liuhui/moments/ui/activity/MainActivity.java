@@ -1,7 +1,6 @@
 package com.liuhui.moments.ui.activity;
 
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,8 +28,6 @@ import java.util.ArrayList;
  */
 public class MainActivity extends BaseActivity implements BaseQuickAdapter.RequestLoadMoreListener {
 
-    //    private RecyclerView mRecyclerView;
-//    private SwipeRefreshLayout mSwipeRefreshLayout;
     private MomentAdapter mMomentAdapter;
     private ArrayList<MomentModel> mMomentModelList;
     private int mPosition = 0;
@@ -63,9 +60,7 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
             @Override
             public void onRefresh() {
                 AppCacheUtil.getInstance(mContext).put(Constant.REQUEST_TWEETS_DATA, "");
-//                mMomentModelList = null;
-//                mMomentAdapter.setNewData(null);
-                mPosition = 0;
+//                mPosition = 0;
                 requestData();
             }
         });
@@ -86,7 +81,6 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
         }
 
         String string = AppCacheUtil.getInstance(mContext).getString(Constant.REQUEST_TWEETS_DATA);
-        Log.e("sss", "initData: " + string);
         mMomentModelList = (ArrayList<MomentModel>) JSON.parseArray(string, MomentModel.class);
         mRecyclerView.postDelayed(new Runnable() {
             @Override
@@ -118,6 +112,7 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
             @Override
             public void success(String string) {
                 if (mMomentModelList != null) {
+                    mPosition = 0;
                     mMomentModelList = null;
                     mMomentAdapter.setNewData(null);
                 }
