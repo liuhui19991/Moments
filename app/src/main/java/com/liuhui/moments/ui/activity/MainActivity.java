@@ -1,9 +1,11 @@
 package com.liuhui.moments.ui.activity;
 
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -13,7 +15,10 @@ import com.liuhui.moments.adapter.MomentAdapter;
 import com.liuhui.moments.net.Net;
 import com.liuhui.moments.net.Show;
 import com.liuhui.moments.ui.model.MomentModel;
+import com.liuhui.moments.ui.model.UserInfoModel;
 import com.liuhui.moments.utils.AppCacheUtil;
+import com.liuhui.moments.utils.ImageLoaderUtil;
+import com.liuhui.moments.widget.FriendRefreshView;
 
 import java.util.ArrayList;
 
@@ -24,11 +29,15 @@ import java.util.ArrayList;
  */
 public class MainActivity extends BaseActivity implements BaseQuickAdapter.RequestLoadMoreListener {
 
-    private RecyclerView mRecyclerView;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    //    private RecyclerView mRecyclerView;
+//    private SwipeRefreshLayout mSwipeRefreshLayout;
     private MomentAdapter mMomentAdapter;
     private ArrayList<MomentModel> mMomentModelList;
     private int mPosition = 0;
+    private FriendRefreshView.FriendRefreshRecyclerView mRecyclerView;
+    private FriendRefreshView mFriendRefreshView;
+    private TextView mTv_name;
+    private ImageView mIv_avatar;
 
     @Override
     protected int getLayoutId() {
@@ -37,17 +46,29 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
 
     @Override
     protected void initView() {
-        mRecyclerView = findView(R.id.recycler_view);
-        mSwipeRefreshLayout = findView(R.id.swipe_refresh);
-        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light,
-                android.R.color.holo_orange_light, android.R.color.holo_green_light);
-
-        mSwipeRefreshLayout.setOnRefreshListener(mOnRefreshListener);
         mMomentAdapter = new MomentAdapter(R.layout.item_text_img, null, mContext);
+
+        mFriendRefreshView = findView(R.id.moment_view);
+        mRecyclerView = mFriendRefreshView.getContentView();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setAdapter(mMomentAdapter);
-
         mMomentAdapter.setOnLoadMoreListener(this, mRecyclerView);
+
+        View headViw = LayoutInflater.from(mContext).inflate(R.layout.item_rv_head_layout, null);
+        mTv_name = (TextView) headViw.findViewById(R.id.tv_name);
+        mIv_avatar = (ImageView) headViw.findViewById(R.id.iv_head);
+        mMomentAdapter.addHeaderView(headViw);
+
+        mFriendRefreshView.setOnRefreshListener(new FriendRefreshView.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                AppCacheUtil.getInstance(mContext).put(Constant.REQUEST_TWEETS_DATA, "");
+//                mMomentModelList = null;
+//                mMomentAdapter.setNewData(null);
+                mPosition = 0;
+                requestData();
+            }
+        });
     }
 
     @Override
@@ -57,7 +78,15 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
             loadNextPage();
             return;
         }
-        String string = AppCacheUtil.getInstance(mContext).getString(Constant.REQUEST_DATA);
+        String user = AppCacheUtil.getInstance(mContext).getString(Constant.REQUEST_USER_DATA);
+        UserInfoModel userInfoModel = JSON.parseObject(user, UserInfoModel.class);
+        if (userInfoModel != null) {
+            mTv_name.setText(userInfoModel.getNick());
+            ImageLoaderUtil.displayRound(mIv_avatar, userInfoModel.getAvatar());
+        }
+
+        String string = AppCacheUtil.getInstance(mContext).getString(Constant.REQUEST_TWEETS_DATA);
+        Log.e("sss", "initData: " + string);
         mMomentModelList = (ArrayList<MomentModel>) JSON.parseArray(string, MomentModel.class);
         mRecyclerView.postDelayed(new Runnable() {
             @Override
@@ -73,23 +102,39 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
     }
 
     private void requestData() {
-        Net.go(Constant.MOMENT, new Show(this, false, "") {
+        Net.go(Constant.USER, new Show(this, false, "") {
             @Override
-            public void start() {
-                if (mSwipeRefreshLayout != null && !mSwipeRefreshLayout.isRefreshing()) {
-                    mSwipeRefreshLayout.setRefreshing(true);
-                }
+            public void success(String string) {
+                UserInfoModel userInfoModel = JSON.parseObject(string, UserInfoModel.class);
+                mTv_name.setText(userInfoModel.getNick());
+                ImageLoaderUtil.displayRound(mIv_avatar, userInfoModel.getAvatar());
+
+                AppCacheUtil.getInstance(mContext).put(Constant.REQUEST_USER_DATA, string);
             }
+        });
+
+        Net.go(Constant.MOMENT, new Show(this, false, "") {
 
             @Override
             public void success(String string) {
-                Log.e("sss", "success: " + string);
-//                String result = string.replace("unknown error", "error");
-//                String result = string.replace("unknown error", "error");
-//                result = string;
+                if (mMomentModelList != null) {
+                    mMomentModelList = null;
+                    mMomentAdapter.setNewData(null);
+                }
                 mMomentModelList = (ArrayList<MomentModel>) JSON.parseArray(string, MomentModel.class);
+                ArrayList<MomentModel> showList = new ArrayList();
+                for (int i = 0; i < mMomentModelList.size(); i++) {
+                    MomentModel momentModel = mMomentModelList.get(i);
+                    if (momentModel.getContent() != null || momentModel.getImages() != null) {
+                        showList.add(momentModel);
+                    }
+                }
+                mMomentModelList.clear();
+                mMomentModelList.addAll(showList);
+
+
                 //1.请求下来的数据需要保存到本地
-                AppCacheUtil.getInstance(mContext).put(Constant.REQUEST_DATA, string);
+                AppCacheUtil.getInstance(mContext).put(Constant.REQUEST_TWEETS_DATA, JSON.toJSONString(mMomentModelList));
                 ArrayList<MomentModel> currentPosition = new ArrayList<>();
                 for (int i = mPosition; i < mPosition + 5; i++) {
                     currentPosition.add(mMomentModelList.get(i));
@@ -100,8 +145,7 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
 
             @Override
             public void finish() {
-                if (mSwipeRefreshLayout != null)
-                    mSwipeRefreshLayout.setRefreshing(false);
+                mFriendRefreshView.stopRefresh();
             }
         });
     }
@@ -124,8 +168,10 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
         ArrayList<MomentModel> currentPosition = new ArrayList<>();
         for (int i = mPosition; i < mPosition + 5; i++) {
             //把请求下来的数据五个为一组
-            if (i >= mMomentModelList.size() - 1) {
-                currentPosition.add(mMomentModelList.get(i));
+            if (i >= (mMomentModelList.size() - 1)) {
+                if (i == (mMomentModelList.size() - 1)) {
+                    currentPosition.add(mMomentModelList.get(i));
+                }
                 mMomentAdapter.addData(currentPosition);
                 mMomentAdapter.loadMoreEnd();
                 return;
@@ -137,22 +183,4 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
         mMomentAdapter.loadMoreComplete();
     }
 
-    /**
-     * 刷新监听。
-     */
-    private SwipeRefreshLayout.OnRefreshListener mOnRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
-        @Override
-        public void onRefresh() {
-            mRecyclerView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    AppCacheUtil.getInstance(mContext).put(Constant.REQUEST_DATA, "");
-                    mMomentModelList = null;
-                    mMomentAdapter.setNewData(null);
-                    mPosition = 0;
-                    requestData();
-                }
-            }, 2000);
-        }
-    };
 }

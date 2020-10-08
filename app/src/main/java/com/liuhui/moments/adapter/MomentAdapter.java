@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -42,16 +41,16 @@ public class MomentAdapter extends BaseQuickAdapter<MomentModel, BaseViewHolder>
 
     @Override
     protected void convert(final BaseViewHolder helper, MomentModel momentModel) {
-        if (momentModel.getError() != null) {
-            TextView textView = helper.getView(tv_img_content);
-            textView.setText(momentModel.getError());
-            textView.setTextColor(Color.RED);
-            textView.setVisibility(View.VISIBLE);
-            helper.getView(R.id.tv_img_name).setVisibility(View.GONE);
-            helper.getView(R.id.ninePicture).setVisibility(View.GONE);
-            helper.getView(R.id.rv_img_respond).setVisibility(View.GONE);
-            return;
-        }
+//        if (momentModel.getError() != null) {
+//            TextView textView = helper.getView(tv_img_content);
+//            textView.setText(momentModel.getError());
+//            textView.setTextColor(Color.RED);
+//            textView.setVisibility(View.VISIBLE);
+//            helper.getView(R.id.tv_img_name).setVisibility(View.GONE);
+//            helper.getView(R.id.ninePicture).setVisibility(View.GONE);
+//            helper.getView(R.id.rv_img_respond).setVisibility(View.GONE);
+//            return;
+//        }
         if (momentModel.getSender() !=  null){
             // 加载用户头像
             ImageLoaderUtil.display((ImageView) helper.getView(R.id.iv_img_head), momentModel.getSender().getAvatar());

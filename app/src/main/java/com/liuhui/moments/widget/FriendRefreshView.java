@@ -7,15 +7,12 @@ import android.os.Message;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 
 import com.liuhui.moments.R;
 
@@ -27,7 +24,12 @@ public class FriendRefreshView extends ViewGroup implements OnDetectScrollListen
 
     //圆形指示器
     private ImageView mRainbowView;
-    private ListView mContentView;
+
+    public FriendRefreshRecyclerView getContentView() {
+        return mContentView;
+    }
+
+    private FriendRefreshRecyclerView mContentView;
 
     //控件宽，高
     private int sWidth;
@@ -60,7 +62,7 @@ public class FriendRefreshView extends ViewGroup implements OnDetectScrollListen
     //刷新接口listener
     private OnRefreshListener mRefreshLisenter;
 
-    private AbsListView.OnScrollListener onScrollListener;
+    private RecyclerView.OnScrollListener onScrollListener;
     private OnDetectScrollListener onDetectScrollListener;
 
     public enum State {
@@ -299,37 +301,55 @@ public class FriendRefreshView extends ViewGroup implements OnDetectScrollListen
      *
      */
     private void initListView() {
-        mContentView = new FriendRefreshListView(getContext());
-        View mHeadViw = LayoutInflater.from(getContext()).inflate(R.layout.item_rv_head_layout, null);
-        mContentView.addHeaderView(mHeadViw);
+        mContentView = new FriendRefreshRecyclerView(getContext());
+//        View mHeadViw = LayoutInflater.from(getContext()).inflate(R.layout.item_rv_head_layout, null);
+//        mContentView.addHeaderView(mHeadViw);
 
         this.addView(mContentView);
-        mContentView.setOnScrollListener(new AbsListView.OnScrollListener() {
+   /*     mContentView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });*/
+
+
+        mContentView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
             private int oldTop;
             private int oldFirstVisibleItem;
 
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            public void onScrollStateChanged(RecyclerView view, int scrollState) {
                 if (onScrollListener != null) {
                     onScrollListener.onScrollStateChanged(view, scrollState);
                 }
             }
 
             @Override
-            public void onScroll(AbsListView view, int firstVisibleItem,
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+
+          /*  @Override
+            public void onScroll(RecyclerView view, int firstVisibleItem,
                                  int visibleItemCount, int totalItemCount) {
                 firstItem = firstVisibleItem;
                 if (onScrollListener != null) {
-                    onScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+                    onScrollListener.onScrolled(view, firstVisibleItem, visibleItemCount, totalItemCount);
                 }
 
                 if (onDetectScrollListener != null) {
                     onDetectedListScroll(view, firstVisibleItem);
                 }
-            }
+            }*/
 
-            private void onDetectedListScroll(AbsListView absListView, int firstVisibleItem) {
+            private void onDetectedListScroll(RecyclerView absListView, int firstVisibleItem) {
                 View view = absListView.getChildAt(0);
                 int top = (view == null) ? 0 : view.getTop();
 
@@ -434,19 +454,19 @@ public class FriendRefreshView extends ViewGroup implements OnDetectScrollListen
     /**
      * 对ListView的触摸事件进行判断，是否处于滑动状态
      */
-    private class FriendRefreshListView extends ListView {
+    public class FriendRefreshRecyclerView extends RecyclerView {
 
 
 
-        public FriendRefreshListView(Context context) {
+        public FriendRefreshRecyclerView(Context context) {
             this(context, null);
         }
 
-        public FriendRefreshListView(Context context, AttributeSet attrs) {
+        public FriendRefreshRecyclerView(Context context, AttributeSet attrs) {
             this(context, attrs, 0);
         }
 
-        public FriendRefreshListView(Context context, AttributeSet attrs, int defStyleAttr) {
+        public FriendRefreshRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
             super(context, attrs, defStyleAttr);
             setBackgroundColor(Color.parseColor("#ffffff"));
         }
@@ -498,12 +518,6 @@ public class FriendRefreshView extends ViewGroup implements OnDetectScrollListen
         }
     }
 
-    public void setAdapter(BaseAdapter adapter) {
-        if (mContentView != null) {
-            mContentView.setAdapter(adapter);
-        }
-    }
-
     public boolean isRefreshing() {
         return mState == State.REFRESHING;
     }
@@ -538,6 +552,7 @@ public class FriendRefreshView extends ViewGroup implements OnDetectScrollListen
     }
 
     public interface OnRefreshListener {
+
         public void onRefresh();
     }
 }
